@@ -42,7 +42,7 @@ public:
 	bool load(string path);
 
 	/*
-	*	\brief		To-Do
+	*	\brief		Test push
 	*	\param		param
 	*/
 	int find(string item);
