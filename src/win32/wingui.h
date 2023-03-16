@@ -115,6 +115,7 @@ protected:
 		wcex.hInstance = GetModuleHandle(NULL);
 		wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wcex.hbrBackground = CreateSolidBrush(COL_BODY);
+		wcex.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_APP));
 		wcex.lpszClassName = winClass;
 		wcex.lpszMenuName = menuName;
 		wcex.style = CS_BYTEALIGNWINDOW | CS_DBLCLKS;

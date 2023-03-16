@@ -29,9 +29,9 @@ LRESULT Caption::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 	{
 		case WM_CREATE: {
 
-			close = Button({ 0,0,45,29 }, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_CLOSE)));
-			maximize = Button({ 0,0,45,29 }, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MAXIMIZE)));
-			minimize = Button({ 0,0,45,29 }, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MINIMIZE)));
+			close = Button({ 0,0,45,29 }, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_CLOSE)));
+			maximize = Button({ 0,0,45,29 }, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_MAXIMIZE)));
+			minimize = Button({ 0,0,45,29 }, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_MINIMIZE)));
 
 			BOOL t = TRUE;
 			DwmSetWindowAttribute(wnd, DWMWA_CLOAK, &t, sizeof(t));
@@ -42,11 +42,11 @@ LRESULT Caption::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 		case WM_SIZE: {
 
 			if (wpm == SIZE_MAXIMIZED) {
-				maximize.icon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_RESTORE));
+				maximize.icon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_RESTORE));
 				rgn.top = 7;
 			}
 			else {
-				maximize.icon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_MAXIMIZE));
+				maximize.icon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_MAXIMIZE));
 				rgn.top = 0;
 			}
 

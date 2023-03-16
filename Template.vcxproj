@@ -95,7 +95,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\</AdditionalIncludeDirectories>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
@@ -192,13 +192,19 @@
     <ClInclude Include="src\win32\wingui.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="res\Resource.rc" />
+    <Image Include="res\icons\app.ico" />
+    <Image Include="res\icons\close.ico" />
+    <Image Include="res\icons\maximize.ico" />
+    <Image Include="res\icons\minimize.ico" />
+    <Image Include="res\icons\restore.ico" />
+    <Image Include="res\icon\app.ico" />
+    <Image Include="res\icon\close.ico" />
+    <Image Include="res\icon\maximize.ico" />
+    <Image Include="res\icon\minimize.ico" />
+    <Image Include="res\icon\restore.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\close.ico" />
-    <Image Include="res\maximize.ico" />
-    <Image Include="res\minimize.ico" />
-    <Image Include="res\restore.ico" />
+    <ResourceCompile Include="res\resource.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -52,13 +52,15 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_CLOSE               ICON                    "close.ico"
+ICO_APP                 ICON                    "icon/app.ico"
 
-IDI_MAXIMIZE            ICON                    "maximize.ico"
+ICO_CLOSE               ICON                    "icon/close.ico"
 
-IDI_RESTORE             ICON                    "restore.ico"
+ICO_MAXIMIZE            ICON                    "icon/maximize.ico"
 
-IDI_MINIMIZE            ICON                    "minimize.ico"
+ICO_MINIMIZE            ICON                    "icon/minimize.ico"
+
+ICO_RESTORE             ICON                    "icon/restore.ico"
 
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////

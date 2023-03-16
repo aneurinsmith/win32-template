@@ -52,7 +52,6 @@ public:
 	*	\param		item – The value to search for.
 	*	\param		val – The value to assign to the item if found. If the value is NULL, dont set the value.
 	*	\returns	True if the item exists, false if not.
-	*	\see s
 	*/
 
 	bool set(string item, const char* val);
