@@ -66,21 +66,24 @@ LRESULT Core::init() {
 	return true;
 }
 
+int MARGIN_X = 8;
+int MARGIN_Y = 32;
+
 void Core::handle_resize() {
 	caption.resize({ 0,1,_window->rgn.right,_window->rgn.top-1 }, NULL);
 
 	panel1.resize({ 
-		4,
-		_window->rgn.top + 4, 
-		400,
-		_window->rgn.bottom - _window->rgn.top - 26
+		MARGIN_X,
+		(_window->rgn.top) + MARGIN_X,
+		(_window->rgn.right/2) - MARGIN_X,
+		(_window->rgn.bottom) - (_window->rgn.top) - MARGIN_Y
 		}, NULL);
 
 	panel2.resize({
-		408,
-		_window->rgn.top + 4,
-		_window->rgn.right - 412,
-		_window->rgn.bottom - _window->rgn.top - 26
+		(_window->rgn.right / 2) + MARGIN_X,
+		(_window->rgn.top) + MARGIN_X,
+		(_window->rgn.right) - (_window->rgn.right / 2) - (MARGIN_X*2),
+		(_window->rgn.bottom) - (_window->rgn.top) - MARGIN_Y
 		}, NULL);
 
 }
