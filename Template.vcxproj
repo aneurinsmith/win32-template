@@ -85,9 +85,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\debug\</OutDir>
+    <IntDir>$(SolutionDir)bin\debug\x64\</IntDir>
+    <TargetName>template</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\release\</OutDir>
+    <IntDir>$(SolutionDir)bin\release\x64\</IntDir>
+    <TargetName>template</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -95,7 +101,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\</AdditionalIncludeDirectories>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
@@ -119,7 +125,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
@@ -142,6 +148,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,6 +167,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
