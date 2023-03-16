@@ -37,7 +37,7 @@ LRESULT Window::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 		case WM_CREATE: 
 		{
 			core._window = this;
-			core.init(hwnd);
+			core.init();
 
 			break;
 		}

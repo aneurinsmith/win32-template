@@ -53,7 +53,7 @@ void Core::save() {
 	f.save();
 }
 
-LRESULT Core::init(HWND hwnd) {
+LRESULT Core::init() {
 	_caption = &caption;
 	caption.init(_window->hwnd);
 

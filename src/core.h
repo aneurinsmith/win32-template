@@ -24,7 +24,7 @@ public:
 
 	void save();
 
-	LRESULT init(HWND);
+	LRESULT init();
 
 private:
 	File f;
