@@ -1,9 +1,23 @@
+/*
+	\brief		
+	\file		entry.cpp
+	\author		Aneurin F. Smith
+*/
 
 #include "include.h"
 #include "core.h"
 #include "window/window.h"
 
-int CALLBACK WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hPrevInst, _In_ LPSTR cmdLine, _In_ int cmdShow) {
+/*
+	\brief		The user-provided entry point for a graphical Windows-based application.
+	\param			hInst – A handle to the current instance of the application.
+	\param			hPrevInst – A handle to the previous instance of the application. This parameter is always NULL.
+	\param			cmdLine – The command line for the application, excluding the program name.
+	\param			cmdShow – Controls how the window is to be shown.
+	\see		https://github.com/AneurinSmith/win32-template/wiki/entry#winmain
+	\see		https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-winmain
+*/
+int CALLBACK WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hPrevInst, _In_ LPSTR cmdLine, _In_ INT cmdShow) {
 
 	MSG msg = {};
 

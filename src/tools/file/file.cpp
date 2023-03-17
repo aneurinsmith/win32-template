@@ -1,14 +1,15 @@
+/*
+	\brief		Defines the methods declared in file.h
+	\file		file.cpp
+	\author		Aneurin F. Smith
+*/
 
 #include "file.h"
-
-File::File() {
-
-}
 
 bool File::load(string _path) {
 	path = _path;
 	rows = new Row[0];
-	rows->length = 0;
+	total_rows = 0;
 
 	errno_t err = fopen_s(&_stream, path.c_str(), "rb");
 	if (err != 0) return false;
@@ -38,9 +39,9 @@ bool File::load(string _path) {
 	}
 	p = buf;
 	rows = new Row[count + 1];
-	rows->length = count+1;
+	total_rows = count+1;
 
-	for (int i = 0; i < rows->length; i++) {
+	for (int i = 0; i < total_rows; i++) {
 		while (*p) {
 
 			if (*p == '=') {
@@ -72,9 +73,9 @@ bool File::save() {
 	errno_t err = fopen_s(&_stream, path.c_str(), "wb");
 	if (err != 0) return false;
 
-	for (int i = 0; i < rows->length; i++) {
+	for (int i = 0; i < total_rows; i++) {
 		fprintf(_stream, "%s", rows[i]._buffer().c_str());
-		if(i != rows->length - 1) fprintf(_stream, "\r\n");
+		if(i != total_rows - 1) fprintf(_stream, "\r\n");
 	}
 
 	fclose(_stream);
@@ -83,7 +84,7 @@ bool File::save() {
 
 int File::find(string item) {
 
-	for (int i = 0; i < rows->length; i++) {
+	for (int i = 0; i < total_rows; i++) {
 		if (rows[i]._item == item) {
 			return stoi(rows[i]._val);
 		}
@@ -93,7 +94,7 @@ int File::find(string item) {
 
 bool File::set(string item, const char* val) {
 
-	for (int i = 0; i < rows->length; i++) {
+	for (int i = 0; i < total_rows; i++) {
 		if (rows[i]._item == item) {
 			if (val) {
 				rows[i]._val = val;
@@ -104,18 +105,19 @@ bool File::set(string item, const char* val) {
 
 	if (val) {
 		Row* p;
-		p = new Row[rows->length];
-		p->length = rows->length;
-		for (int i = 0; i < rows->length; i++) {
+		p = new Row[total_rows];
+		//p->length = length;
+		for (int i = 0; i < total_rows; i++) {
 			*(p + i) = rows[i];
 		}
 
-		rows = new Row[p->length + 1];
-		copy(p, p + p->length, rows);
-		rows->length = p->length + 1;
+		rows = new Row[total_rows + 1];
+		copy(p, p + total_rows, rows);
 
-		rows[p->length]._item = item;
-		rows[p->length]._val = val;
+		rows[total_rows]._item = item;
+		rows[total_rows]._val = val;
+
+		total_rows = total_rows + 1;
 
 	}
 

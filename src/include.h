@@ -1,3 +1,8 @@
+/*
+	\brief		The included libraries used by the application. Also uses namespaces by default to make for cleaner looking code.
+	\file		include.h
+	\author		Aneurin F. Smith
+*/
 
 #pragma once
 #include <Windows.h>
