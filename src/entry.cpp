@@ -1,5 +1,5 @@
 /*
-	\brief		
+	\brief		The entry point of the application.
 	\file		entry.cpp
 	\author		Aneurin F. Smith
 */
