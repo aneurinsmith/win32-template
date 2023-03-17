@@ -17,6 +17,7 @@
 #include <ShlObj.h>
 #include <direct.h>
 #include <compare>
+#include <iostream>
 
 #include <dwmapi.h>
 #include <uxtheme.h>
