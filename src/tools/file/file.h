@@ -39,7 +39,7 @@ private:
 public:
 
 	/*
-		\brief		Loads a system file.
+		\brief		Loads a system file from the provided path
 		\param			path – A handle to the current instance of the application.
 		\returns		True if file is loaded correctly, false if loading fails.
 		\see		https://github.com/AneurinSmith/win32-template/wiki/file#load
