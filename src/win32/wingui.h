@@ -46,6 +46,9 @@ protected:
 				RedrawWindow(wnd, NULL, NULL, RDW_INVALIDATE);
 				break;
 			}
+			case WM_ERASEBKGND: {
+				return 1;
+			}
 			case WM_CLOSE: {
 				PostQuitMessage(0);
 				break;
