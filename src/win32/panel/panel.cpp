@@ -26,6 +26,7 @@ LRESULT Panel::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 	{
 		case WM_LBUTTONDOWN:
 		{
+			display(false);
 			if(docked) {
 				docked = false;
 
@@ -57,21 +58,20 @@ LRESULT Panel::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 				RECT rc = { pos.x, pos.y, pos.x + size.cx, pos.y + size.cy };
 				GetWindowRect(prnt, &rc);
 				InvalidateRect(prnt, &rc, false);
-
-				
 			}
+			break;
 		}
 
 		case WM_PAINT:
 		{
 			r.begin_draw();
+
 			if (docked) {
 				r.draw_rect({ 0, 0,rgn.right,rgn.bottom }, 0x212021);
-				r.draw_rect({ 0,0,rgn.right,24 }, 0x212021);
 			}
 			else {
-				r.draw_rect({ 0, 1,rgn.right,rgn.bottom }, 0x212021);
-				r.draw_rect({ 0,1,rgn.right,24 }, COL_BODY);
+				r.draw_rect({ 0, 1,rgn.right,24 }, 0x212021);
+				r.draw_rect({ 0,24,rgn.right,rgn.bottom }, COL_BODY);
 			}
 
 			r.end_draw();
@@ -101,8 +101,6 @@ LRESULT Panel::HandleDWM(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, BOOL* callD
 			// Sets the caption height from the window theme and extends frame into client area
 			case WM_CREATE:
 			{
-
-
 				SetWindowLong(hwnd, GWL_STYLE, WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
 				SetParent(hwnd, NULL);
 

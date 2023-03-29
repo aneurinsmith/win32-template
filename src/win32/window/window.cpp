@@ -45,6 +45,8 @@ LRESULT Window::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 		{
 			if(core._window) core.handle_resize();
 			SendMessage(core.caption.hwnd, msg, wpm, lpm);
+			RECT rc = { 0,0,rgn.right,1 };
+			InvalidateRect(hwnd, &rc, true);
 
 			break;
 		}
