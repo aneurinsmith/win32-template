@@ -16,7 +16,6 @@
 #include <shlwapi.h>
 #include <ShlObj.h>
 #include <direct.h>
-#include <compare>
 #include <iostream>
 
 #include <dwmapi.h>

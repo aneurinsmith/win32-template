@@ -183,8 +183,11 @@
     <ClCompile Include="src\core.cpp" />
     <ClCompile Include="src\entry.cpp" />
     <ClCompile Include="src\tools\bitmap\bitmap.cpp" />
+    <ClCompile Include="src\tools\dock\dock.cpp" />
     <ClCompile Include="src\tools\file\file.cpp" />
-    <ClCompile Include="src\win32\button\button.cpp" />
+    <ClCompile Include="src\tools\params\params.cpp" />
+    <ClCompile Include="src\tools\renderer\renderer.cpp" />
+    <ClCompile Include="src\tools\button\button.cpp" />
     <ClCompile Include="src\win32\caption\caption.cpp" />
     <ClCompile Include="src\win32\panel\panel.cpp" />
     <ClCompile Include="src\win32\window\window.cpp" />
@@ -194,8 +197,11 @@
     <ClInclude Include="src\core.h" />
     <ClInclude Include="src\include.h" />
     <ClInclude Include="src\tools\bitmap\bitmap.h" />
+    <ClInclude Include="src\tools\dock\dock.h" />
     <ClInclude Include="src\tools\file\file.h" />
-    <ClInclude Include="src\win32\button\button.h" />
+    <ClInclude Include="src\tools\params\params.h" />
+    <ClInclude Include="src\tools\renderer\renderer.h" />
+    <ClInclude Include="src\tools\button\button.h" />
     <ClInclude Include="src\win32\caption\caption.h" />
     <ClInclude Include="src\win32\panel\panel.h" />
     <ClInclude Include="src\win32\window\window.h" />

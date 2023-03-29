@@ -33,10 +33,19 @@
     <ClCompile Include="src\tools\file\file.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\win32\button\button.cpp">
+    <ClCompile Include="src\tools\bitmap\bitmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\tools\bitmap\bitmap.cpp">
+    <ClCompile Include="src\tools\renderer\renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\button\button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\params\params.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\dock\dock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,13 +71,22 @@
     <ClInclude Include="src\tools\file\file.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\win32\button\button.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\tools\bitmap\bitmap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="res\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\renderer\renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\button\button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\params\params.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tools\dock\dock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

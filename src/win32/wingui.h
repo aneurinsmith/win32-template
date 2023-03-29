@@ -1,57 +1,7 @@
 #pragma once
 #include "include.h"
+#include "tools/renderer/renderer.h"
 
-
-struct renderer {
-	HWND assoc_wnd;
-	RECT rgn;
-
-	PAINTSTRUCT ps;
-	HDC dc, memdc;
-	HPAINTBUFFER hbuffer;
-
-	BP_PAINTPARAMS params = {
-		sizeof(params),
-		BPPF_NOCLIP | BPPF_ERASE
-	};
-
-	void attach(HWND wnd) {
-		assoc_wnd = wnd;
-	}
-
-	void begin_draw() {
-		dc = BeginPaint(assoc_wnd, &ps);
-		BufferedPaintInit();
-		hbuffer = BeginBufferedPaint(dc, &rgn, BPBF_TOPDOWNDIB, &params, &memdc);
-	}
-
-	void end_draw() {
-		BufferedPaintSetAlpha(hbuffer, &rgn, 255);
-		BufferedPaintUnInit();
-		EndBufferedPaint(hbuffer, TRUE);
-		EndPaint(assoc_wnd, &ps);
-	}
-
-	void resize_buffer(RECT region) {
-		rgn = region;
-	}
-
-	void invalidate_rect(RECT _rc) {
-		InvalidateRect(assoc_wnd, &_rc, false);
-	}
-
-	void draw_rect(RECT _rc, COLORREF _br) {
-		HBRUSH br = CreateSolidBrush(_br);
-		rgn = _rc;
-		FillRect(memdc, &rgn, br);
-		DeleteObject(br);
-	}
-
-	void draw_icon(RECT _rc, HICON _i) {
-		DrawIconEx(memdc, _rc.left - (_rc.right/2), _rc.top - (_rc.bottom / 2), _i, _rc.right, _rc.bottom,
-			0, NULL, DI_NORMAL | DI_COMPAT);
-	}
-};
 
 template <class win_temp>
 class defwin {
@@ -71,9 +21,8 @@ protected:
 			menuName,
 			winClass;
 
-	renderer r;
+	Renderer r;
 
-	static LRESULT CALLBACK MainProc(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, UINT_PTR subclassID, DWORD_PTR subclassData);
 	static LRESULT CALLBACK DefProc(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 
 		win_temp* win_data = reinterpret_cast<win_temp*>(::GetWindowLongPtr(wnd, GWLP_USERDATA));
@@ -95,7 +44,6 @@ protected:
 				win_data->r.resize_buffer(client);
 
 				RedrawWindow(wnd, NULL, NULL, RDW_INVALIDATE);
-
 				break;
 			}
 			case WM_CLOSE: {

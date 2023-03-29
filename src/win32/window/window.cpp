@@ -20,11 +20,9 @@ LRESULT Window::init() {
 
 	WINDOWPLACEMENT wp;
 	GetWindowPlacement(hwnd, &wp);
-	wp.rcNormalPosition = {core.params.x, core.params.y, core.params.x + core.params.cx, core.params.y + core.params.cy};
-	wp.showCmd = core.params.fs ? SW_SHOWMAXIMIZED : SW_SHOWNORMAL;
+	wp.rcNormalPosition = core.params.get_rect();
+	wp.showCmd = core.params.get_fs() ? SW_SHOWMAXIMIZED : SW_SHOWNORMAL;
 	SetWindowPlacement(hwnd, &wp);
-
-	//SetWindowSubclass(hwnd, MainProc, 0, 0);
 
 	return true;
 }

@@ -6,7 +6,7 @@
 
 #include "include.h"
 #include "core.h"
-#include "window/window.h"
+#include "win32/window/window.h"
 
 /*
 	\brief		The user-provided entry point for a graphical Windows-based application.

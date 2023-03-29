@@ -1,16 +1,11 @@
 #pragma once
 #include "include.h"
-#include "tools/file/file.h"
-#include "panel/panel.h"
-#include "caption/caption.h"
+#include "tools/dock/dock.h"
+#include "tools/params/params.h"
 
-struct Parameters {
-	bool fs = -1;
-	LONG x = -1;
-	LONG y = -1;
-	LONG cx = -1;
-	LONG cy = -1;
-};
+#include "win32/panel/panel.h"
+#include "win32/caption/caption.h"
+
 
 class Window;
 class Panel;
@@ -27,8 +22,8 @@ public:
 	LRESULT init();
 
 private:
-	File f;
-	Parameters params;
+	Params params;
+
 	Window* _window = nullptr;
 
 	Caption caption;
@@ -44,16 +39,3 @@ private:
 protected:
 	void handle_resize();
 };
-
-inline string get_appdata() {
-	string p;
-	char appdata[MAX_PATH];
-
-	SHGetSpecialFolderPathA(NULL, appdata, CSIDL_APPDATA, 0);
-
-	p.append(appdata);
-	p.append("\\Template");
-	_mkdir(p.c_str());
-	p.append("\\template.ini");
-	return p;
-}
