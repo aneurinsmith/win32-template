@@ -6,16 +6,16 @@ void Renderer::attach(HWND wnd) {
 }
 
 void Renderer::begin_draw() {
-	dc = BeginPaint(assoc_wnd, &ps);
 	BufferedPaintInit();
-	hbuffer = BeginBufferedPaint(dc, &rgn, BPBF_TOPDOWNDIB, &params, &memdc);
+	dc = BeginPaint(assoc_wnd, &ps);
+	hbuffer = BeginBufferedPaint(dc, &rgn, BPBF_TOPDOWNDIB, NULL, &memdc);
 }
 
 void Renderer::end_draw() {
 	BufferedPaintSetAlpha(hbuffer, &rgn, 255);
-	BufferedPaintUnInit();
 	EndBufferedPaint(hbuffer, TRUE);
 	EndPaint(assoc_wnd, &ps);
+	BufferedPaintUnInit();
 }
 
 void Renderer::resize_buffer(RECT region) {
@@ -28,8 +28,8 @@ void Renderer::invalidate_rect(RECT _rc) {
 
 void Renderer::draw_rect(RECT _rc, COLORREF _br) {
 	HBRUSH br = CreateSolidBrush(_br);
-	rgn = _rc;
-	FillRect(memdc, &rgn, br);
+	RECT rc = _rc;
+	FillRect(memdc, &rc, br);
 	DeleteObject(br);
 }
 
