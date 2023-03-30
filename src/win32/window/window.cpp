@@ -4,11 +4,10 @@
 int Window::sys_height = 0;
 int Window::sys_frame = 0;
 
-
 Window::Window() {
 	winClass = APP_NAME;
 	winName = APP_NAME;
-	style = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_CLIPCHILDREN;
+	style = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
 }
 
 LRESULT Window::init() {
@@ -31,6 +30,7 @@ LRESULT Window::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 	
 	switch (msg)
 	{
+
 		// Launch the core app
 		case WM_CREATE: 
 		{
@@ -45,35 +45,19 @@ LRESULT Window::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 		{
 			if(core._window) core.handle_resize();
 			SendMessage(core.caption.hwnd, msg, wpm, lpm);
-			RECT rc = { 0,0,rgn.right,1 };
-			InvalidateRect(hwnd, &rc, true);
 
 			break;
 		}
 
-		// Update window pos and size
-		case WM_EXITSIZEMOVE:
-		{
-			RECT rc;
-			GetWindowRect(hwnd, &rc);
-			resize({ rc.left , rc.top , rc.right - rc.left , rc.bottom - rc.top }, SWP_NOMOVE | SWP_NOSIZE);
-			
-			break;
-		}
-
-		// Disable redrawing when possible
-		case WM_ERASEBKGND: 
-		{
-			return 1;
-		}
-		
 		// Draw background color
 		case WM_PAINT: 
 		{
+			r.resize_buffer({ 0,0,size.cx,size.cy });
 			r.begin_draw();
-			r.draw_rect({ 0,1,rgn.right,rgn.bottom }, COL_BODY);
+			r.resize_buffer({ 0,1,size.cx,size.cy });
+			r.draw_rect({ 0,0,size.cx,size.cy }, COL_BODY);
+			r.draw_rect({ 0,0,size.cx,1 }, 0x000000);
 			r.end_draw();
-
 			break;
 		}
 

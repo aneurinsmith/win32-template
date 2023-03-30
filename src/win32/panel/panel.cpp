@@ -39,11 +39,7 @@ LRESULT Panel::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 				MARGINS m = { 0,0,24,0 };
 				DwmExtendFrameIntoClientArea(hwnd, &m);
 
-				UpdateWindow(hwnd);
-				ShowWindow(hwnd, SW_SHOW);
-
-				RECT rc = { pos.x, pos.y, pos.x + size.cx, pos.y + size.cy };
-				InvalidateRect(prnt, &rc, false);
+				display(true);
 			}
 			else {
 				docked = true;
@@ -51,31 +47,19 @@ LRESULT Panel::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 				SetWindowLong(hwnd, GWL_STYLE, WS_CHILD);
 				SetParent(hwnd, prnt);
 
-				UpdateWindow(hwnd);
-				ShowWindow(hwnd, SW_SHOW);
-
-
-				RECT rc = { pos.x, pos.y, pos.x + size.cx, pos.y + size.cy };
-				GetWindowRect(prnt, &rc);
-				InvalidateRect(prnt, &rc, false);
+				display(true);
 			}
 			break;
 		}
 
 		case WM_PAINT:
 		{
+			r.resize_buffer({ 0,0,size.cx,size.cy });
 			r.begin_draw();
-
-			if (docked) {
-				r.draw_rect({ 0, 0,rgn.right,rgn.bottom }, 0x212021);
-			}
-			else {
-				r.draw_rect({ 0, 1,rgn.right,24 }, 0x212021);
-				r.draw_rect({ 0,24,rgn.right,rgn.bottom }, COL_BODY);
-			}
-
+			r.resize_buffer({ 0,1,size.cx,size.cy });
+			r.draw_rect({ 0,0,size.cx,size.cy }, 0x212021);
+			if(!docked) r.draw_rect({ 0,0,size.cx,1 }, 0x000000);
 			r.end_draw();
-
 			break;
 		}
 
