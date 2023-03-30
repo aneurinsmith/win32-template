@@ -19,7 +19,6 @@ LRESULT Core::init() {
 
 	_panel2 = &panel2;
 	panel2.init(_window->hwnd);
-
 	return true;
 }
 
