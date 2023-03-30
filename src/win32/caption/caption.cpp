@@ -99,7 +99,7 @@ LRESULT Caption::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 			}
 
 			if (maximize.contains(mouse)) {
-				WINDOWPLACEMENT wp;
+				WINDOWPLACEMENT wp = {};
 				GetWindowPlacement(prnt, &wp);
 
 				if (!wp.flags) {

@@ -96,9 +96,6 @@ protected:
 
 public:
 
-	defwin() = default;
-	~defwin() = default;
-
 	LRESULT init() {
 
 		// Assign to application

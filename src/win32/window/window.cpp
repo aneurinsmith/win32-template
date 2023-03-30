@@ -17,7 +17,7 @@ LRESULT Window::init() {
 	BOOL value = TRUE;
 	DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
 
-	WINDOWPLACEMENT wp;
+	WINDOWPLACEMENT wp = {};
 	GetWindowPlacement(hwnd, &wp);
 	wp.rcNormalPosition = core.params.get_rect();
 	wp.showCmd = core.params.get_fs() ? SW_SHOWMAXIMIZED : SW_SHOWNORMAL;

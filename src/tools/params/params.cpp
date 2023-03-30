@@ -40,7 +40,7 @@ bool Params::load() {
 
 void Params::save(HWND wnd) {
 
-	WINDOWPLACEMENT wp;
+	WINDOWPLACEMENT wp = {};
 	GetWindowPlacement(wnd, &wp);
 
 	f.set("[General]", "");

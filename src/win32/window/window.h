@@ -25,8 +25,6 @@ public:
 	LRESULT HandleDarkMode(HWND, UINT, WPARAM, LPARAM);
 
 private:
-	ITaskbarList4* task_bar;
-	HBITMAP cache_bm;
 	Core core;
 
 };
