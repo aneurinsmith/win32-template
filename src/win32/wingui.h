@@ -29,6 +29,7 @@ protected:
 
 		switch (msg) {
 			case WM_NCCREATE: {
+
 				win_temp* win_data = static_cast<win_temp*>((reinterpret_cast<LPCREATESTRUCT>(lpm))->lpCreateParams);
 				win_data->hwnd = wnd;
 				SetWindowLongPtr(wnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(win_data));
@@ -36,21 +37,27 @@ protected:
 				break;
 			}
 			case WM_SIZE: {
-				RECT client = {};
-				GetClientRect(win_data->hwnd, &client);
-				win_data->rgn.right = client.right;
-				win_data->rgn.bottom = client.bottom;
 
-				win_data->r.resize_buffer(client);
+				win_data->rgn.right = GET_X_LPARAM(lpm);
+				win_data->rgn.bottom = GET_Y_LPARAM(lpm);
+
+				win_data->size = { GET_X_LPARAM(lpm),GET_Y_LPARAM(lpm) };
+				win_data->r.resize_buffer({ 0,0,GET_X_LPARAM(lpm),GET_Y_LPARAM(lpm) });
 
 				RedrawWindow(wnd, NULL, NULL, RDW_INVALIDATE);
+
 				break;
 			}
-			case WM_ERASEBKGND: {
-				return 1;
+			case WM_MOVE: {
+
+				win_data->pos = { GET_X_LPARAM(lpm), GET_Y_LPARAM(lpm) };
+
+				break;
 			}
 			case WM_CLOSE: {
-				PostQuitMessage(0);
+
+				//PostQuitMessage(0);
+
 				break;
 			}
 		}
@@ -111,7 +118,6 @@ public:
 
 	void resize(RECT rc, UINT flags) {
 		pos = { rc.left, rc.top };
-		size = { rc.right, rc.bottom };
 		::SetWindowPos(hwnd, nullptr, rc.left, rc.top, rc.right, rc.bottom, flags);
 	}
 };
