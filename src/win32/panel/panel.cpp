@@ -5,7 +5,6 @@ Panel::Panel() {
 	winClass = L"panel";
 	winName = L"panel";
 	style = WS_CHILD;
-	pos = { 10,10 };
 }
 
 LRESULT Panel::init(HWND parent) {
@@ -57,7 +56,7 @@ LRESULT Panel::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 			r.resize_buffer({ 0,0,size.cx,size.cy });
 			r.begin_draw();
 			r.resize_buffer({ 0,1,size.cx,size.cy });
-			r.draw_rect({ 0,0,size.cx,size.cy }, 0x212021);
+			r.draw_rect({ 0,0,size.cx,size.cy }, 0x313031);
 			if(!docked) r.draw_rect({ 0,0,size.cx,1 }, 0x000000);
 			r.end_draw();
 			break;
