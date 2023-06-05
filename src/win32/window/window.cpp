@@ -5,12 +5,19 @@ int Window::sys_height = 0;
 int Window::sys_frame = 0;
 
 Window::Window() {
-	winClass = APP_NAME;
+#ifdef _INFO
+	console_log("Window::Window called", LOG_INFO);
+#endif
+	winClass = L"template";
 	winName = APP_NAME;
 	style = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+
 }
 
 LRESULT Window::init() {
+#ifdef _INFO
+	console_log("Window::init called", LOG_INFO);
+#endif
 
 	defwin::init();
 
@@ -19,8 +26,8 @@ LRESULT Window::init() {
 
 	WINDOWPLACEMENT wp = {};
 	GetWindowPlacement(hwnd, &wp);
-	wp.rcNormalPosition = core.params.get_rect();
-	wp.showCmd = core.params.get_fs() ? SW_SHOWMAXIMIZED : SW_SHOWNORMAL;
+	//wp.rcNormalPosition = core.params.get_rect();
+	//wp.showCmd = core.params.get_fs() ? SW_SHOWMAXIMIZED : SW_SHOWNORMAL;
 	SetWindowPlacement(hwnd, &wp);
 
 	return true;
@@ -58,6 +65,7 @@ LRESULT Window::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 			r.draw_rect({ 0,0,size.cx,size.cy }, COL_BODY);
 			r.draw_rect({ 0,0,size.cx,1 }, 0x000000);
 			r.end_draw();
+
 			break;
 		}
 
@@ -65,8 +73,11 @@ LRESULT Window::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 		case WM_DESTROY:
 		{
 			core.save();
+			core.panel1.display(false);
+			core.panel2.display(false);
 			display(false);
 			PostQuitMessage(0);
+
 			break;
 		}
 
@@ -90,7 +101,7 @@ LRESULT Window::HandleDWM(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, BOOL* call
 		// Sets the caption height from the window theme and extends frame into client area
 		case WM_CREATE: 
 		{
-			Window::sys_height = 120;
+			Window::sys_height = 100;
 			Window::sys_frame = GetSystemMetrics(SM_CXFRAME) + GetSystemMetrics(SM_CXPADDEDBORDER);
 			rgn.top = Window::sys_height;
 
@@ -122,6 +133,7 @@ LRESULT Window::HandleDWM(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, BOOL* call
 		// Handles non-client hittest for the caption area, else handled by the DefWindowProc
 		case WM_NCHITTEST: 
 		{
+			//LOG::print(TRACE, "test");
 			BOOL handled = DwmDefWindowProc(wnd, msg, wpm, lpm, &lRet);
 			if (!handled)
 			{
@@ -152,7 +164,12 @@ LRESULT Window::HandleDWM(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, BOOL* call
 
 
 LRESULT Window::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
-	
+
+	string s("HandleMessage");
+	s.append(to_string(wpm));
+
+	LOG::print(TRACE, "HandleMessage [wnd:", wnd, "] [msg:", msg, "] [wpm:", wpm, "] [lpm:", lpm, "]");
+
 	BOOL callDef = true;
 	BOOL callDWM = false;
 	LRESULT lRet = 0;

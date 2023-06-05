@@ -17,7 +17,7 @@ public:
 
 	LRESULT init();
 
-	static LRESULT CALLBACK MainProc(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm);
+	//static LRESULT CALLBACK MainProc(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm);
 
 	LRESULT HandleMessage(HWND, UINT, WPARAM, LPARAM);
 	LRESULT HandleDef(HWND, UINT, WPARAM, LPARAM);
