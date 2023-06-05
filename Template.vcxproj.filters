@@ -1,130 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="src\core.cpp" />
+    <ClCompile Include="src\entry.cpp" />
+    <ClCompile Include="src\tools\file\file.cpp" />
+    <ClCompile Include="src\tools\renderer\renderer.cpp" />
+    <ClCompile Include="src\tools\button\button.cpp" />
+    <ClCompile Include="src\win32\caption\caption.cpp" />
+    <ClCompile Include="src\win32\panel\panel.cpp" />
+    <ClCompile Include="src\win32\window\window.cpp" />
+    <ClCompile Include="src\win32\dock\dock.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\entry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\win32\window\window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\win32\panel\panel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\core.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\win32\caption\caption.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tools\file\file.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tools\bitmap\bitmap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tools\renderer\renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tools\button\button.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tools\params\params.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tools\dock\dock.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="res\resource.h" />
+    <ClInclude Include="src\core.h" />
+    <ClInclude Include="src\include.h" />
+    <ClInclude Include="src\tools\file\file.h" />
+    <ClInclude Include="src\tools\renderer\renderer.h" />
+    <ClInclude Include="src\tools\button\button.h" />
+    <ClInclude Include="src\win32\caption\caption.h" />
+    <ClInclude Include="src\win32\panel\panel.h" />
+    <ClInclude Include="src\win32\window\window.h" />
+    <ClInclude Include="src\win32\wingui.h" />
+    <ClInclude Include="src\win32\dock\dock.h" />
+    <ClInclude Include="src\tools\logger\logger.h" />
+    <ClInclude Include="src\tools\logger\sinks\console_sink.h" />
+    <ClInclude Include="src\tools\logger\sinks\base_sink.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\win32\wingui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\win32\window\window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\win32\panel\panel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\include.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\win32\caption\caption.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tools\file\file.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tools\bitmap\bitmap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="res\resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tools\renderer\renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tools\button\button.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tools\params\params.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tools\dock\dock.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ResourceCompile Include="res\resource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\icons\app.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\icons\close.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\icons\maximize.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\icons\minimize.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\icons\restore.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\icon\app.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\icon\close.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\icon\maximize.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\icon\minimize.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\icon\restore.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="res\resource.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
+    <Image Include="res\icons\app.ico" />
+    <Image Include="res\icons\close.ico" />
+    <Image Include="res\icons\maximize.ico" />
+    <Image Include="res\icons\minimize.ico" />
+    <Image Include="res\icons\restore.ico" />
+    <Image Include="res\icon\app.ico" />
+    <Image Include="res\icon\close.ico" />
+    <Image Include="res\icon\maximize.ico" />
+    <Image Include="res\icon\minimize.ico" />
+    <Image Include="res\icon\restore.ico" />
   </ItemGroup>
 </Project>

@@ -74,25 +74,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\debug\</OutDir>
-    <IntDir>$(SolutionDir)bin\debug\x86\</IntDir>
+    <IntDir>$(SolutionDir)bin\debug\x86\template\</IntDir>
     <TargetName>template</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\release\</OutDir>
-    <IntDir>$(SolutionDir)bin\release\x86\</IntDir>
+    <IntDir>$(SolutionDir)bin\release\x86\template\</IntDir>
     <TargetName>template</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\debug\</OutDir>
-    <IntDir>$(SolutionDir)bin\debug\x64\</IntDir>
+    <IntDir>$(SolutionDir)bin\debug\x64\template\</IntDir>
     <TargetName>template</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\release\</OutDir>
-    <IntDir>$(SolutionDir)bin\release\x64\</IntDir>
+    <IntDir>$(SolutionDir)bin\release\x64\template\</IntDir>
     <TargetName>template</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -148,7 +148,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -167,7 +167,7 @@
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\$(SolutionDir)\src\win32\;$(SolutionDir)\src\;$(SolutionDir)\res\;$(SolutionDir)\res\icon\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -182,13 +182,11 @@
   <ItemGroup>
     <ClCompile Include="src\core.cpp" />
     <ClCompile Include="src\entry.cpp" />
-    <ClCompile Include="src\tools\bitmap\bitmap.cpp" />
-    <ClCompile Include="src\tools\dock\dock.cpp" />
     <ClCompile Include="src\tools\file\file.cpp" />
-    <ClCompile Include="src\tools\params\params.cpp" />
     <ClCompile Include="src\tools\renderer\renderer.cpp" />
     <ClCompile Include="src\tools\button\button.cpp" />
     <ClCompile Include="src\win32\caption\caption.cpp" />
+    <ClCompile Include="src\win32\dock\dock.cpp" />
     <ClCompile Include="src\win32\panel\panel.cpp" />
     <ClCompile Include="src\win32\window\window.cpp" />
   </ItemGroup>
@@ -196,13 +194,14 @@
     <ClInclude Include="res\resource.h" />
     <ClInclude Include="src\core.h" />
     <ClInclude Include="src\include.h" />
-    <ClInclude Include="src\tools\bitmap\bitmap.h" />
-    <ClInclude Include="src\tools\dock\dock.h" />
     <ClInclude Include="src\tools\file\file.h" />
-    <ClInclude Include="src\tools\params\params.h" />
+    <ClInclude Include="src\tools\logger\logger.h" />
+    <ClInclude Include="src\tools\logger\sinks\base_sink.h" />
+    <ClInclude Include="src\tools\logger\sinks\console_sink.h" />
     <ClInclude Include="src\tools\renderer\renderer.h" />
     <ClInclude Include="src\tools\button\button.h" />
     <ClInclude Include="src\win32\caption\caption.h" />
+    <ClInclude Include="src\win32\dock\dock.h" />
     <ClInclude Include="src\win32\panel\panel.h" />
     <ClInclude Include="src\win32\window\window.h" />
     <ClInclude Include="src\win32\wingui.h" />
