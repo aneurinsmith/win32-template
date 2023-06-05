@@ -7,21 +7,28 @@
 #include "file.h"
 
 bool File::load(string _path) {
+
 	path = _path;
 	rows = new Row[0];
 	total_rows = 0;
 
 	errno_t err = fopen_s(&_stream, path.c_str(), "rb");
-	if (err != 0) return false;
+	if (err != 0) {
+		return false;
+	}
 
 	int length = 0;
 	fseek(_stream, 0, SEEK_END);
 	length = ftell(_stream);
 	fseek(_stream, 0, SEEK_SET);
 
+
+
 	char* buf = new char[length + 1];
 	buf[0] = 0;
-	if(fread(buf, length, 1, _stream) != 1) return false;
+	if (fread(buf, length, 1, _stream) != 1) {
+		return false;
+	}
 	buf[length] = 0;
 
 	string item;
@@ -40,6 +47,7 @@ bool File::load(string _path) {
 	p = buf;
 	rows = new Row[count + 1];
 	total_rows = count+1;
+
 
 	for (int i = 0; i < total_rows; i++) {
 		while (*p) {
@@ -63,15 +71,21 @@ bool File::load(string _path) {
 		rows[i]._val = val;
 		item.clear();
 		val.clear();
+
 	}
 	fclose(_stream);
+
 	return true;
 }
 
 bool File::save() {
-	if (!rows) return false;
+	if (!rows) {
+		return false;
+	}
 	errno_t err = fopen_s(&_stream, path.c_str(), "wb");
-	if (err != 0) return false;
+	if (err != 0) {
+		return false;
+	}
 
 	for (int i = 0; i < total_rows; i++) {
 		fprintf(_stream, "%s", rows[i]._buffer().c_str());

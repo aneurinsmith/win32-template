@@ -4,6 +4,7 @@
 	\author		Aneurin F. Smith
 */
 
+#pragma once
 #include "include.h"
 
 /*
