@@ -243,7 +243,8 @@ private:
             case WM_CREATE: {
 
                 HWND cmd = FindWindow(L"ConsoleWindowClass", NULL);
-                HICON iconSM = (HICON)GetClassLong(cmd, GCL_HICONSM);
+                
+                HICON iconSM = (HICON)SendMessage(cmd, WM_GETICON, ICON_SMALL, 0); //GetClassLong(cmd, GCL_HICONSM);
                 SendMessage(wnd, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_APP)));
                 SendMessage(wnd, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)iconSM);
 
