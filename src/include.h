@@ -17,6 +17,11 @@
 #include <ShlObj.h>
 #include <direct.h>
 #include <iostream>
+#include <fstream>
+#include <mutex>
+#include <queue>
+
+#include <atlstr.h>
 
 #include <dwmapi.h>
 #include <uxtheme.h>
@@ -50,13 +55,26 @@
 #pragma comment(lib,"shlwapi.lib")
 
 #define APP_NAME L"Template"
-#define COL_BODY 0x313031
+#define COL_BODY 0x212021
 #define COL_HEAD 0x313031
-
 #define IDC_INVALIDATE 32771
-
 
 #include "resource.h"
 
 using namespace Microsoft::WRL;
 using namespace std;
+
+
+#include "tools/logger/logger.h"
+
+inline string get_appdata() {
+	string p;
+	char appdata[MAX_PATH];
+
+	SHGetSpecialFolderPathA(NULL, appdata, CSIDL_APPDATA, 0);
+
+	p.append(appdata);
+	p.append("\\Template");
+	_mkdir(p.c_str());
+	return p;
+}
