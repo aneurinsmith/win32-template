@@ -1,3 +1,4 @@
+
 #pragma once
 #include "include.h"
 #include "tools/renderer/renderer.h"
@@ -27,10 +28,11 @@ protected:
 
 		win_temp* win_data = reinterpret_cast<win_temp*>(::GetWindowLongPtr(wnd, GWLP_USERDATA));
 
+
 		switch (msg) {
 			case WM_NCCREATE: {
 
-				win_temp* win_data = static_cast<win_temp*>((reinterpret_cast<LPCREATESTRUCT>(lpm))->lpCreateParams);
+				win_data = static_cast<win_temp*>((reinterpret_cast<LPCREATESTRUCT>(lpm))->lpCreateParams);
 				win_data->hwnd = wnd;
 				SetWindowLongPtr(wnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(win_data));
 
@@ -54,34 +56,31 @@ protected:
 
 				break;
 			}
-			case WM_CLOSE: {
-
-				//PostQuitMessage(0);
-
-				break;
-			}
 		}
 		return win_data->HandleMessage(wnd, msg, wpm, lpm);
 	}
 
 	BOOL AssignClass(LPCWSTR winClass) {
 		WNDCLASSEXW wcex = {};
-		wcex.cbSize = sizeof(wcex);
-		wcex.lpfnWndProc = DefProc;
-		wcex.cbClsExtra = 0;
-		wcex.cbWndExtra = 0;
-		wcex.hInstance = GetModuleHandle(NULL);
-		wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-		wcex.hbrBackground = CreateSolidBrush(COL_BODY);
-		wcex.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_APP));
-		wcex.lpszClassName = winClass;
-		wcex.lpszMenuName = menuName;
-		wcex.style = CS_BYTEALIGNWINDOW | CS_DBLCLKS;
 		
 		if (!GetClassInfoExW(GetModuleHandle(NULL), winClass, &wcex))
 		{
-			if (!RegisterClassExW(&wcex)) return false;
+			wcex.cbSize = sizeof(wcex);
+			wcex.lpfnWndProc = DefProc;
+			wcex.cbClsExtra = 0;
+			wcex.cbWndExtra = 0;
+			wcex.hInstance = GetModuleHandle(NULL);
+			wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+			wcex.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_APP));
+			wcex.lpszClassName = winClass;
+			wcex.lpszMenuName = menuName;
+			wcex.style = CS_BYTEALIGNWINDOW | CS_DBLCLKS;
+
+			if (!RegisterClassExW(&wcex)) {
+				return false;
+			}
 		}
+
 		return true;
 	}
 
@@ -90,7 +89,9 @@ protected:
 			p.x, p.y, s.cx, s.cy,
 			prnt, (HMENU)ctrlID, GetModuleHandle(NULL), (void*)this);
 
-		if (!hwnd) return false;
+		if (!hwnd) {
+			return false;
+		}
 		return true;
 	}
 
