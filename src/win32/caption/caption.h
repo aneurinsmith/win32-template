@@ -1,22 +1,18 @@
+
 #pragma once
-#include "include.h"
-#include "wingui.h"
+#include "defwin.h"
 #include "tools/button/button.h"
 
+class Caption : public defwin {
+	friend class Window;
+	friend class Core;
 
-enum State {normal,hover,click};
-
-class Core;
-
-class Caption : public defwin<Caption> {
-friend class Window;
-friend class Core;
 public:
 	Caption();
+	BOOL init(HWND parent);
 
-	LRESULT init(HWND);
-
-	LRESULT HandleMessage(HWND, UINT, WPARAM, LPARAM);
+protected:
+	LRESULT HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm);
 
 	Button close;
 	Button maximize;

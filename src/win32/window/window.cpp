@@ -1,45 +1,53 @@
 
-#include "window.h" 
+#include "window.h"
 
-int Window::sys_height = 0;
-int Window::sys_frame = 0;
+auto window_console = LOG::console_logger(L"Console (window)", 30);
 
 Window::Window() {
-#ifdef _INFO
-	console_log("Window::Window called", LOG_INFO);
-#endif
+	window_console.print(INFO, "Window::Window()");
 	winClass = L"template";
-	winName = APP_NAME;
+	winName = L"template";
 	style = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
-
 }
 
-LRESULT Window::init() {
-#ifdef _INFO
-	console_log("Window::init called", LOG_INFO);
-#endif
+BOOL Window::init() {
+	window_console.print(INFO, "Window::init()");
 
 	defwin::init();
 
 	BOOL value = TRUE;
 	DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
 
-	WINDOWPLACEMENT wp = {};
-	GetWindowPlacement(hwnd, &wp);
-	//wp.rcNormalPosition = core.params.get_rect();
-	//wp.showCmd = core.params.get_fs() ? SW_SHOWMAXIMIZED : SW_SHOWNORMAL;
-	SetWindowPlacement(hwnd, &wp);
+	display();
 
 	return true;
 }
 
+
+LRESULT Window::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
+	window_console.print(INFO, "Window::HandleMessage(HWND ",wnd,", UINT ",msg,", WPARAM ",wpm,", LPARAM ",lpm,")");
+
+	BOOL callDef = true;
+	BOOL callDWM = false;
+	LRESULT lRet = 0;
+
+	DwmIsCompositionEnabled(&callDWM);
+	if (callDWM) {
+		lRet = HandleDWM(wnd, msg, wpm, lpm, &callDef);
+	}
+	if (callDef) {
+		lRet = HandleDef(wnd, msg, wpm, lpm);
+	}
+
+	return lRet;
+}
+
 LRESULT Window::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
-	
-	switch (msg)
-	{
+
+	switch (msg) {
 
 		// Launch the core app
-		case WM_CREATE: 
+		case WM_CREATE:
 		{
 			core._window = this;
 			core.init();
@@ -48,16 +56,16 @@ LRESULT Window::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 		}
 
 		// Delegate to core app if it is launched and pass window messages to the caption
-		case WM_SIZE: 
+		case WM_SIZE:
 		{
-			if(core._window) core.handle_resize();
+			if (core._window) core.handle_resize();
 			SendMessage(core.caption.hwnd, msg, wpm, lpm);
 
 			break;
 		}
 
 		// Draw background color
-		case WM_PAINT: 
+		case WM_PAINT:
 		{
 			r.resize_buffer({ 0,0,size.cx,size.cy });
 			r.begin_draw();
@@ -73,8 +81,6 @@ LRESULT Window::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 		case WM_DESTROY:
 		{
 			core.save();
-			core.panel1.display(false);
-			core.panel2.display(false);
 			display(false);
 			PostQuitMessage(0);
 
@@ -89,7 +95,6 @@ LRESULT Window::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 	return 0;
 }
 
-
 LRESULT Window::HandleDWM(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, BOOL* callDef) {
 
 	LRESULT lRet = 0;
@@ -98,12 +103,13 @@ LRESULT Window::HandleDWM(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, BOOL* call
 	_callDef = !DwmDefWindowProc(wnd, msg, wpm, lpm, &lRet);
 
 	switch (msg) {
+
 		// Sets the caption height from the window theme and extends frame into client area
-		case WM_CREATE: 
+		case WM_CREATE:
 		{
-			Window::sys_height = 100;
-			Window::sys_frame = GetSystemMetrics(SM_CXFRAME) + GetSystemMetrics(SM_CXPADDEDBORDER);
-			rgn.top = Window::sys_height;
+			_sysHeight = 100;
+			_sysFrame = GetSystemMetrics(SM_CXFRAME) + GetSystemMetrics(SM_CXPADDEDBORDER);
+			rgn.top = _sysHeight;
 
 			MARGINS m = { 0,0,rgn.top,0 };
 			DwmExtendFrameIntoClientArea(wnd, &m);
@@ -114,15 +120,14 @@ LRESULT Window::HandleDWM(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, BOOL* call
 		}
 
 		// Removes the default window but keeps the aero shadow
-		case WM_NCCALCSIZE: 
+		case WM_NCCALCSIZE:
 		{
-			if (wpm == TRUE) 
-			{
+			if (wpm == TRUE) {
 				NCCALCSIZE_PARAMS* sz = reinterpret_cast<NCCALCSIZE_PARAMS*>(lpm);
 
-				sz->rgrc[0].left += Window::sys_frame;
-				sz->rgrc[0].right -= Window::sys_frame;
-				sz->rgrc[0].bottom -= Window::sys_frame;
+				sz->rgrc[0].left += _sysFrame;
+				sz->rgrc[0].right -= _sysFrame;
+				sz->rgrc[0].bottom -= _sysFrame;
 			}
 			lRet = 0;
 			_callDef = false;
@@ -131,23 +136,19 @@ LRESULT Window::HandleDWM(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, BOOL* call
 		}
 
 		// Handles non-client hittest for the caption area, else handled by the DefWindowProc
-		case WM_NCHITTEST: 
+		case WM_NCHITTEST:
 		{
-			//LOG::print(TRACE, "test");
 			BOOL handled = DwmDefWindowProc(wnd, msg, wpm, lpm, &lRet);
-			if (!handled)
-			{
+			if (!handled) {
 				POINT mouse = { GET_X_LPARAM(lpm), GET_Y_LPARAM(lpm) };
 				ScreenToClient(hwnd, &mouse);
 
-				if (mouse.y < sys_height && mouse.x < rgn.right && mouse.x > 0) 
-				{
-					if (mouse.y < Window::sys_frame) lRet = HTTOP;
+				if (mouse.y < _sysHeight && mouse.x < rgn.right && mouse.x > 0) {
+					if (mouse.y < _sysFrame) lRet = HTTOP;
 					else if (mouse.y > rgn.bottom) lRet = HTBOTTOM;
 					else lRet = HTCAPTION;
 				}
-				else 
-				{
+				else {
 					lRet = DefWindowProc(wnd, msg, wpm, lpm);
 				}
 			}
@@ -155,34 +156,9 @@ LRESULT Window::HandleDWM(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, BOOL* call
 
 			break;
 		}
-
 	}
 
 	*callDef = _callDef;
 	return lRet;
 }
 
-
-LRESULT Window::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
-
-	string s("HandleMessage");
-	s.append(to_string(wpm));
-
-	LOG::print(TRACE, "HandleMessage [wnd:", wnd, "] [msg:", msg, "] [wpm:", wpm, "] [lpm:", lpm, "]");
-
-	BOOL callDef = true;
-	BOOL callDWM = false;
-	LRESULT lRet = 0;
-
-	DwmIsCompositionEnabled(&callDWM);
-	if (callDWM) 
-	{
-		lRet = HandleDWM(wnd, msg, wpm, lpm, &callDef);
-	}
-	if (callDef) 
-	{
-		lRet = HandleDef(wnd, msg, wpm, lpm);
-	}
-
-	return lRet;
-}

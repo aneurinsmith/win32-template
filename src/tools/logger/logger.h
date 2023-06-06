@@ -37,8 +37,9 @@ namespace LOG {
 	template<typename... Args>
 	inline string convert(Level lvl, Args... msgs) {
 
-		string msg;
 		stringstream stream;
+
+		stream << chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch()).count();
 
 		switch (lvl) {
 		case TRACE: stream << "[trace] "; break;

@@ -1,22 +1,17 @@
 
 #include "caption.h"
 
+
 Caption::Caption() {
 	winClass = L"caption";
 	winName = L"caption";
 	style = WS_CHILD;
-	size = { 0,0 };
 }
 
-
-LRESULT Caption::init(HWND parent) {
-
+BOOL Caption::init(HWND parent) {
 	prnt = parent;
 	defwin::init();
 
-	SetWindowLong(hwnd, GWL_STYLE, 0);
-
-	resize({ 0 }, SWP_NOSIZE | SWP_NOMOVE | SWP_FRAMECHANGED);
 	display(true);
 
 	return true;
@@ -24,17 +19,14 @@ LRESULT Caption::init(HWND parent) {
 
 
 LRESULT Caption::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
-
-	switch (msg)
-	{
+	
+	switch (msg) {
+		
 		case WM_CREATE: {
 
 			close = Button({ 0,0,45,29 }, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_CLOSE)));
 			maximize = Button({ 0,0,45,29 }, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_MAXIMIZE)));
 			minimize = Button({ 0,0,45,29 }, LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_MINIMIZE)));
-
-			BOOL t = TRUE;
-			DwmSetWindowAttribute(wnd, DWMWA_CLOAK, &t, sizeof(t));
 
 			break;
 		}
@@ -68,7 +60,7 @@ LRESULT Caption::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 				tme.hwndTrack = wnd;
 				tme.dwFlags = TME_LEAVE;
 
-				if(_TrackMouseEvent(&tme)) tracking = true;
+				if (_TrackMouseEvent(&tme)) tracking = true;
 			}
 			break;
 		}
@@ -150,7 +142,7 @@ LRESULT Caption::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 
 			return lRet;
 		}
-
+		
 		case WM_PAINT:
 		{
 			r.begin_draw();

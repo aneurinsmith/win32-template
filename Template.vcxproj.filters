@@ -1,31 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\core.cpp" />
     <ClCompile Include="src\entry.cpp" />
-    <ClCompile Include="src\tools\file\file.cpp" />
-    <ClCompile Include="src\tools\renderer\renderer.cpp" />
-    <ClCompile Include="src\tools\button\button.cpp" />
-    <ClCompile Include="src\win32\caption\caption.cpp" />
-    <ClCompile Include="src\win32\panel\panel.cpp" />
     <ClCompile Include="src\win32\window\window.cpp" />
-    <ClCompile Include="src\win32\dock\dock.cpp" />
+    <ClCompile Include="src\win32\panel\canvas\canvas.cpp" />
+    <ClCompile Include="src\tools\button\button.cpp" />
+    <ClCompile Include="src\tools\renderer\renderer.cpp" />
+    <ClCompile Include="src\core\core.cpp" />
+    <ClCompile Include="src\win32\panel\panel.cpp" />
+    <ClCompile Include="src\win32\caption\caption.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="res\resource.h" />
-    <ClInclude Include="src\core.h" />
-    <ClInclude Include="src\include.h" />
-    <ClInclude Include="src\tools\file\file.h" />
-    <ClInclude Include="src\tools\renderer\renderer.h" />
-    <ClInclude Include="src\tools\button\button.h" />
-    <ClInclude Include="src\win32\caption\caption.h" />
     <ClInclude Include="src\win32\panel\panel.h" />
+    <ClInclude Include="src\win32\panel\canvas\canvas.h" />
+    <ClInclude Include="src\win32\defwin.h" />
     <ClInclude Include="src\win32\window\window.h" />
-    <ClInclude Include="src\win32\wingui.h" />
-    <ClInclude Include="src\win32\dock\dock.h" />
+    <ClInclude Include="src\include.h" />
+    <ClInclude Include="src\tools\button\button.h" />
     <ClInclude Include="src\tools\logger\logger.h" />
-    <ClInclude Include="src\tools\logger\sinks\console_sink.h" />
+    <ClInclude Include="src\tools\renderer\renderer.h" />
     <ClInclude Include="src\tools\logger\sinks\base_sink.h" />
+    <ClInclude Include="src\tools\logger\sinks\console_sink.h" />
+    <ClInclude Include="src\core\core.h" />
+    <ClInclude Include="src\win32\caption\caption.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="res\resource.rc" />

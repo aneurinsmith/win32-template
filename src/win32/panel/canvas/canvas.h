@@ -1,11 +1,11 @@
 
 #pragma once
-#include "defwin.h"
+#include "panel/panel.h"
 
-class Panel : public defwin {
+class Canvas : public Panel {
 
 public:
-	Panel();
+	Canvas();
 	BOOL init();
 
 protected:

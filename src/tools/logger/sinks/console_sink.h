@@ -11,6 +11,7 @@
     \brief		The strucutre template for a ConsoleSink. Extends the basesink interface.
 */
 class ConsoleSink : public basesink {
+
 public:
 
     /*
@@ -108,7 +109,7 @@ private:
             RegisterClassExW(&wcex);
         }
 
-        CreateWindowW(L"console", data->name.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 800, 600, NULL, (HMENU)0, GetModuleHandle(NULL), (void*)data);
+        CreateWindowW(L"console", data->name.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1200, 600, NULL, (HMENU)0, GetModuleHandle(NULL), (void*)data);
 
         RedrawWindow(data->hwnd, NULL, NULL, NULL);
         ShowWindow(data->hwnd, SW_SHOW);
