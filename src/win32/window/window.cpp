@@ -25,7 +25,7 @@ BOOL Window::init() {
 
 
 LRESULT Window::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
-	window_console.print(INFO, "Window::HandleMessage(HWND ",wnd,", UINT ",msg,", WPARAM ",wpm,", LPARAM ",lpm,")");
+	window_console.print(TRACE, "Window::HandleMessage(HWND ",wnd,", UINT ",msg,", WPARAM ",wpm,", LPARAM ",lpm,")");
 
 	BOOL callDef = true;
 	BOOL callDWM = false;
