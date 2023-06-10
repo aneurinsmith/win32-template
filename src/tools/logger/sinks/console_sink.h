@@ -35,7 +35,7 @@ public:
     }
 
     ~ConsoleSink() {
-        PostQuitMessage(0);
+        PostThreadMessageA(GetThreadId(thread), WM_QUIT, 0, 0);
     }
 
     /*
@@ -120,7 +120,13 @@ private:
 
             MSG msg = {};
             while (true) {
-                if (!data->q.empty()) {
+                if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+                    TranslateMessage(&msg);
+                    DispatchMessage(&msg);
+                    if (msg.message == WM_QUIT) {
+                        break;
+                    }
+                }else if (!data->q.empty()) {
                     SendMessageA(data->console, WM_SETREDRAW, FALSE, NULL);
                     LockWindowUpdate(data->console);
                     string m = data->dequeue();
@@ -141,11 +147,7 @@ private:
                     if (data->q.empty()) {
                         SendMessageA(data->console, WM_SETREDRAW, TRUE, NULL);
                     }
-                }else if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-                    TranslateMessage(&msg);
-                    DispatchMessage(&msg);
-                    if (msg.message == WM_QUIT) break;
-                }
+                } 
             }
         }
         catch (std::runtime_error& ex) {
