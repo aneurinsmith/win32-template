@@ -183,7 +183,8 @@
     <ClCompile Include="src\core\core.cpp" />
     <ClCompile Include="src\entry.cpp" />
     <ClCompile Include="src\tools\button\button.cpp" />
-    <ClCompile Include="src\tools\file\config\config.cpp" />
+    <ClCompile Include="src\tools\codec\codec.cpp" />
+    <ClCompile Include="src\tools\config\config.cpp" />
     <ClCompile Include="src\tools\file\file.cpp" />
     <ClCompile Include="src\tools\renderer\renderer.cpp" />
     <ClCompile Include="src\win32\caption\caption.cpp" />
@@ -196,7 +197,8 @@
     <ClInclude Include="src\core\core.h" />
     <ClInclude Include="src\include.h" />
     <ClInclude Include="src\tools\button\button.h" />
-    <ClInclude Include="src\tools\file\config\config.h" />
+    <ClInclude Include="src\tools\codec\codec.h" />
+    <ClInclude Include="src\tools\config\config.h" />
     <ClInclude Include="src\tools\file\file.h" />
     <ClInclude Include="src\tools\logger\logger.h" />
     <ClInclude Include="src\tools\logger\sinks\base_sink.h" />

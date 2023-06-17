@@ -6,6 +6,8 @@
 
 #include "include.h"
 #include "win32/window/window.h"
+
+Config c;
 int _winCount = 0;
 int _sysHeight = 0;
 int _sysFrame = 0;
@@ -21,7 +23,7 @@ int _sysFrame = 0;
 */
 int CALLBACK WinMain(_In_ HINSTANCE hInst, _In_opt_ HINSTANCE hPrevInst, _In_ LPSTR cmdLine, _In_ INT cmdShow) {
 
-	LOG::set_level(INFO);
+	//LOG::set_level(INFO);
 
 	try {
 		Window w;

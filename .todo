@@ -1,0 +1,5 @@
+- Button class
+	- Create SetIcon method to protect icon
+	- Make button handle messages itself if possible
+	- Create SetColor method to protect cols
+	- Create SetIconSize method to protect iSize

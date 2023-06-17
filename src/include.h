@@ -15,12 +15,16 @@
 #pragma comment (lib, "uxtheme.lib")
 
 // Standard
+#include <thread>
+
 #include <mutex>
 #include <queue>
 
 #include <sstream>
 #include <iostream>
 #include <fstream>
+
+#include <map>
 
 #include <stdexcept>
 
@@ -29,5 +33,4 @@ using namespace std;
 
 // Common
 #include "resource.h"
-#include "tools/logger/logger.h"
 
