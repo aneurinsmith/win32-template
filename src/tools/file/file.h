@@ -5,26 +5,39 @@
 class File {
 
 public:
-	File() = default;
-	File(string _path);
 
-	bool load();
-	bool load(string _path);
-	bool save();
-	bool save(string _path);
-	bool write(string _text);
-	bool write(string _text, int index);
+	File();
+	~File();
 
-	int get_index(string _text);
-	string get_line(int index);
+	virtual File& open(string _name, int _mode);
+	File& open(string _path, string _name, int _mode);
+	File& open(int _path, string _name, int _mode);
 
-	string get_buffer();
+	virtual bool flush();
+	bool close();
 
-	static string get_appdata();
+	virtual vector<string> sync();
+	vector<string> read();
 
-private:
+	int write(string _text);
+	int write(string _text, int _index);
+	int insert(string _text, int _index);
 
-	string path;
-	vector<string> lines;
+	int tell();
+	int seek(int _index, int _way = ios::beg);
+
+protected:
+
+	string name;
+	int mode;
+	int lineHead;
+	int charHead;
+
+	ifstream istream;
+	ofstream ostream;
+	vector<string> sbuffer;
+
+	mutex m;
+	unique_lock<mutex> lk;
 
 };
