@@ -3,14 +3,6 @@
 #include "win32/window/window.h"
 
 
-Core::Core() {
-
-}
-
-void Core::save() {
-
-}
-
 BOOL Core::init() {
 
 	_caption = &caption;

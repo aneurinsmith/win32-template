@@ -10,10 +10,6 @@ class Core final {
 	friend class Window;
 public:
 
-	Core();
-
-	void save();
-
 	BOOL init();
 
 private:
