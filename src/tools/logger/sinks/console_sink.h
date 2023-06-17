@@ -1,132 +1,90 @@
-﻿/*
-    \brief		The header file for the ConsoleSink class.
-    \file		console_sink.h
-    \author		Aneurin F. Smith
-*/
 
 #pragma once
 #include "base_sink.h"
+#include "defwin.h"
 
-/*
-    \brief		The strucutre template for a ConsoleSink. Extends the basesink interface.
-*/
-class ConsoleSink : public basesink {
+class ConsoleSink : public basesink, public defwin {
 
 public:
 
-    /*
-        \brief		Constructor method for a ConsoleSink. Initilises a new thread to avoid interfering with the
-                    debugged application too much. Will block the calling thread until the created thread is fully
-                    initilised.
-        \param      _name – The name to be used as the title of the console window.
-        \param      _ringbuffer – The maximum number of rows in the logger before old ones get deleted.
-    */
-    ConsoleSink(wstring _name, int _ringbuffer) {
-
+    ConsoleSink(string _name, int _ringbuffer) {
         name = _name;
         ringbuffer = _ringbuffer;
         min_lvl = (Level)0;
+        menuName = 0;
 
-        unique_lock<mutex> lk(cv_m);
+        style = WS_OVERLAPPEDWINDOW;
 
-        thread = (HANDLE)_beginthread(ThreadStart, 0, (void*)this);
-
-        cv.wait(lk);
+        c.open(CSIDL_APPDATA, "Template\\config.ini", ios::in);
+        string config_name = "console." + name;
+        pos = {
+            c.isSet(config_name, "x") ? c.getVal(config_name, "x") : 40,
+            c.isSet(config_name, "y") ? c.getVal(config_name, "y") : 40
+        };
+        size = {
+            c.isSet(config_name, "cx") ? c.getVal(config_name, "cx") : 600,
+            c.isSet(config_name, "cy") ? c.getVal(config_name, "cy") : 400
+        };
+        fs = c.isSet(config_name, "fs") ? c.getVal(config_name, "fs") : 0;
+        c.close();
     }
 
     ~ConsoleSink() {
+        SendMessageA(hwnd, WM_DESTROY, 0, 0);
+
         PostThreadMessageA(GetThreadId(thread), WM_QUIT, 0, 0);
+        unique_lock<mutex> lk(m);
+        cv.wait(lk);
     }
 
-    /*
-        \brief		Changes the minimum level of message to be output by the sink.
-        \param      lvl – The minimum level the sink will output.
-    */
     void set_level(Level lvl) {
         min_lvl = lvl;
     }
 
-    /*
-        \brief		Prints the message to the sink, provided the minimum level is met.
-        \param      lvl – The level of the message to be checked.
-    */
     void print(Level lvl, string msg) {
-        if(lvl >= min_lvl) enqueue(msg);
+        if (lvl >= min_lvl) enqueue(msg);
     }
 
-private:
+    BOOL init() {
 
-    queue<string> q;
+        unique_lock<mutex> lk(m);
+        thread = (HANDLE)_beginthread(ThreadStart, 0, (void*)this);
+        cv.wait(lk);
 
-    /*
-        \brief      Enqueue a message into the string queue.
-        \param      msg – The message to be enqueued.
-    */
-    void enqueue(string msg) {
-        q.push(msg);
+        return true;
     }
 
-    /*
-        \brief      Retrieve a message from the front of the queue, and remove it.
-        \return     The string at the front of the queue.
-    */
-    string dequeue() {
+protected:
 
-        string _msg = q.front();
-        q.pop();
+    HANDLE  thread;
+    HWND    console;
+    int     ringbuffer;
 
-        return _msg;
-    }
-
-    HWND hwnd;
-    HWND console;
-    HANDLE thread;
-
-    mutex cv_m;
-    condition_variable cv;
-
-    wstring name;
-    int ringbuffer;
-    Level min_lvl;
-
-    /*
-        \brief      The entry point of the thread. Creates a window and processes messages until WM_QUIT is posted to the window.
-        \param      _data – A pointer to a ConsoleSink data structure to be operated on.
-    */
     static void ThreadStart(void* _data) {
         ConsoleSink* data = (ConsoleSink*)_data;
 
-        WNDCLASSEXW wcex = {};
-        if (!GetClassInfoExW(GetModuleHandle(NULL), L"console", &wcex)) {
-            wcex.cbSize = sizeof(wcex);
-            wcex.lpfnWndProc = WindowProc;
-            wcex.cbClsExtra = 0;
-            wcex.cbWndExtra = 0;
-            wcex.hInstance = GetModuleHandle(NULL);
-            wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-            wcex.lpszClassName = L"console";
-
-            RegisterClassExW(&wcex);
-        }
-
-        CreateWindowW(L"console", data->name.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, 1200, 600, NULL, (HMENU)0, GetModuleHandle(NULL), (void*)data);
-
-        RedrawWindow(data->hwnd, NULL, NULL, NULL);
-        ShowWindow(data->hwnd, SW_SHOW);
+        data->defwin::init();
+        data->maximize(data->fs);
+        data->display();
 
         data->cv.notify_all();
 
-        try {
+        MSG msg = {};
+        while (true) {
 
-            MSG msg = {};
-            while (true) {
+            try {
                 if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+                    
                     TranslateMessage(&msg);
                     DispatchMessage(&msg);
+
                     if (msg.message == WM_QUIT) {
+                        data->cv.notify_all();
                         break;
                     }
-                }else if (!data->q.empty()) {
+
+                }
+                else if (!data->q.empty()) {
                     SendMessageA(data->console, WM_SETREDRAW, FALSE, NULL);
                     LockWindowUpdate(data->console);
                     string m = data->dequeue();
@@ -147,23 +105,109 @@ private:
                     if (data->q.empty()) {
                         SendMessageA(data->console, WM_SETREDRAW, TRUE, NULL);
                     }
-                } 
+                }
+            }
+            catch (...) {
+                continue;
             }
         }
-        catch (std::runtime_error& ex) {
-            MessageBoxA(NULL, ex.what(), "Runtime Exception", MB_OK);
-        }
-
-        _endthread();
     }
 
-    /*
-        \brief      A subclassed window process, used by a ListBox window which acts as the output for the console window.
-        \see        https://learn.microsoft.com/en-us/windows/win32/winmsg/window-procedures
-    */
-    static LRESULT CALLBACK ConsoleProc(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, UINT_PTR _subclass, DWORD_PTR _data) {
+	LRESULT HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 
-        ConsoleSink* data = reinterpret_cast<ConsoleSink*>(::GetWindowLongPtr(wnd, GWLP_USERDATA));
+        switch (msg) {
+            case WM_CREATE: {
+                HWND cmd = FindWindow(L"ConsoleWindowClass", NULL);
+
+                HICON iconSM = (HICON)SendMessage(cmd, WM_GETICON, ICON_SMALL, 0);
+                SendMessage(wnd, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_APP)));
+                SendMessage(wnd, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)iconSM);
+
+                console = CreateWindowExW(LVS_EX_DOUBLEBUFFER, L"LISTBOX", NULL, WS_VISIBLE | WS_CHILD | WS_VSCROLL | LBS_OWNERDRAWVARIABLE, 0, 0, 300, 400, wnd, (HMENU)101, GetModuleHandle(NULL), (void*)this);
+                SetWindowSubclass(console, ConsoleProc, 0, 0);
+
+                HFONT hf;
+                hf = CreateFont(18, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, CLIP_DEFAULT_PRECIS, 0, CLEARTYPE_QUALITY, FF_DONTCARE, L"Consolas");
+                SendMessage(console, WM_SETFONT, (LPARAM)hf, true);
+
+                SetWindowPos(console, wnd, 0, 0, 0, 0, SWP_NOZORDER);
+                SetWindowPos(wnd, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
+
+
+                BOOL value = TRUE;
+                DwmSetWindowAttribute(wnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
+                SetWindowTheme(console, L"DarkMode_Explorer", nullptr);
+                SetWindowTheme(wnd, L"DarkMode_Explorer", nullptr);
+
+            }
+            case WM_SIZE: {
+                SetWindowPos(console, 0, 0, 0, LOWORD(lpm), HIWORD(lpm), SWP_NOZORDER);
+
+                break;
+            }
+            case WM_ERASEBKGND: {
+
+                HDC hdc = (HDC)wpm;
+                RECT rc;
+                GetClientRect(wnd, &rc);
+                HBRUSH brush = CreateSolidBrush(0x0C0C0C);
+                FillRect(hdc, &rc, brush);
+
+                DeleteObject(brush);
+
+                return 1;
+            }
+            case WM_DRAWITEM: {
+                LPDRAWITEMSTRUCT item = (LPDRAWITEMSTRUCT)lpm;
+
+                switch (item->itemAction) {
+                    case ODA_SELECT:
+                    case ODA_DRAWENTIRE: {
+                        HBRUSH brush = CreateSolidBrush(0xCC0000);
+                        SetBkMode(item->hDC, 0x0C0C0C);
+                        SetTextColor(item->hDC, 0xCCCCCC);
+
+                        if (item->itemState & ODS_SELECTED) {
+                            FillRect(item->hDC, &item->rcItem, brush);
+                        }
+
+                        char* str = (char*)item->itemData;
+                        DrawTextA(item->hDC, str, strlen(str), &item->rcItem, DT_LEFT | DT_WORDBREAK | DT_CALCRECT);
+                        SendMessage(item->hwndItem, LB_SETITEMHEIGHT, item->itemID, item->rcItem.bottom - item->rcItem.top);
+
+                        DrawTextA(item->hDC, str, strlen(str), &item->rcItem, DT_LEFT | DT_WORDBREAK);
+
+                        DeleteObject(brush);
+                    }
+                    case ODA_FOCUS: {
+                        break;
+                    }
+                }
+                return true;
+            }
+            case WM_CLOSE:
+            case WM_DESTROY:
+            {
+                WINDOWPLACEMENT wp = {};
+                GetWindowPlacement(wnd, &wp);
+
+                c.open(CSIDL_APPDATA, "Template\\config.ini", ios::in | ios::out);
+                string config_name = "console." + name;
+                c.setVal(config_name, "x", wp.rcNormalPosition.left);
+                c.setVal(config_name, "y", wp.rcNormalPosition.top);
+                c.setVal(config_name, "cx", wp.rcNormalPosition.right - wp.rcNormalPosition.left);
+                c.setVal(config_name, "cy", wp.rcNormalPosition.bottom - wp.rcNormalPosition.top);
+                c.setVal(config_name, "fs", wp.flags == 2 ? 1 : 0);
+                c.close();
+
+                break;
+            }
+        }
+
+		return DefWindowProc(wnd,msg,wpm,lpm);
+	}
+
+    static LRESULT CALLBACK ConsoleProc(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm, UINT_PTR _subclass, DWORD_PTR _data) {
 
         switch (msg) {
             case WM_ERASEBKGND: {
@@ -193,7 +237,7 @@ private:
 
                 return 0;
             }
-                         
+
             case WM_KILLFOCUS:
             case WM_VSCROLL:
             case WM_SETCURSOR:
@@ -209,7 +253,7 @@ private:
                 int sp = GetScrollPos(wnd, SB_VERT);
 
                 if (delta > 0) {
-                    sp -= min(sp,3);
+                    sp -= min(sp, 3);
                 }
                 else if (delta < 0) {
                     sp += 3;
@@ -226,88 +270,22 @@ private:
         return DefSubclassProc(wnd, msg, wpm, lpm);
     }
 
-    /*
-        \brief      The main window process of the console window.
-        \see        https://learn.microsoft.com/en-us/windows/win32/winmsg/window-procedures
-    */
-    static LRESULT CALLBACK WindowProc(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
+private:
+    queue<string> q;
 
-        ConsoleSink* data = reinterpret_cast<ConsoleSink*>(::GetWindowLongPtr(wnd, GWLP_USERDATA));
-
-        switch (msg) {
-            case WM_NCCREATE: {
-
-                data = static_cast<ConsoleSink*>((reinterpret_cast<LPCREATESTRUCT>(lpm))->lpCreateParams);
-                data->hwnd = wnd;
-                ::SetWindowLongPtr(wnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(data));
-
-                break;
-            }
-            case WM_CREATE: {
-
-                HWND cmd = FindWindow(L"ConsoleWindowClass", NULL);
-                
-                HICON iconSM = (HICON)SendMessage(cmd, WM_GETICON, ICON_SMALL, 0); //GetClassLong(cmd, GCL_HICONSM);
-                SendMessage(wnd, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(ICO_APP)));
-                SendMessage(wnd, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)iconSM);
-
-                data->console = CreateWindowExW(LVS_EX_DOUBLEBUFFER, L"LISTBOX", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | LBS_OWNERDRAWVARIABLE, 0, 0, 300, 400, wnd, (HMENU)101, GetModuleHandle(NULL), 0);
-                ::SetWindowLongPtr(data->console, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(data));
-                SetWindowSubclass(data->console, ConsoleProc, 0, 0);
-
-                HFONT hf;
-                hf = CreateFont(18, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, CLIP_DEFAULT_PRECIS, 0, CLEARTYPE_QUALITY, FF_DONTCARE, L"Consolas");
-                SendMessage(data->console, WM_SETFONT, (LPARAM)hf, true);
-
-                SetWindowPos(data->console, wnd, 0, 0, 0, 0, SWP_NOZORDER);
-                SetWindowPos(wnd, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
-
-
-                BOOL value = TRUE;
-                DwmSetWindowAttribute(wnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
-                SetWindowTheme(data->console, L"DarkMode_Explorer", nullptr);
-                SetWindowTheme(wnd, L"DarkMode_Explorer", nullptr);
-
-                break;
-            }
-            case WM_SIZE: {
-                SetWindowPos(data->console, 0, 0, 0, LOWORD(lpm), HIWORD(lpm), SWP_NOZORDER);
-
-                break;
-            }
-            case WM_ERASEBKGND: {
-                return 1;
-            }
-            case WM_DRAWITEM: {
-                LPDRAWITEMSTRUCT item = (LPDRAWITEMSTRUCT)lpm;
-
-                switch (item->itemAction) {
-                    case ODA_SELECT:
-                    case ODA_DRAWENTIRE: {
-                        HBRUSH brush = CreateSolidBrush(0xCC0000);
-                        SetBkMode(item->hDC, 0x0C0C0C);
-                        SetTextColor(item->hDC, 0xCCCCCC);
-
-                        if (item->itemState & ODS_SELECTED) {
-                            FillRect(item->hDC, &item->rcItem, brush);
-                        }
-
-                        char* str = (char*)item->itemData;
-                        DrawTextA(item->hDC, str, strlen(str), &item->rcItem, DT_LEFT | DT_WORDBREAK | DT_CALCRECT);
-                        SendMessage(item->hwndItem, LB_SETITEMHEIGHT, item->itemID, item->rcItem.bottom - item->rcItem.top);
-
-                        DrawTextA(item->hDC, str, strlen(str), &item->rcItem, DT_LEFT | DT_WORDBREAK);
-                                
-                        DeleteObject(brush);
-                    }
-                    case ODA_FOCUS: {
-                        break;
-                    }
-                }
-                return true;
-            }
-        }
-
-        return DefWindowProc(wnd, msg, wpm, lpm);
+    void enqueue(string msg) {
+        q.push(msg);
     }
+
+    string dequeue() {
+
+        string _msg = q.front();
+        q.pop();
+
+        return _msg;
+    }
+
+    mutex m;
+    condition_variable cv;
+
 };
