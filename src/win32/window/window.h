@@ -3,6 +3,8 @@
 #include "defwin.h"
 #include "core/core.h"
 
+#include "tools/logger/logger.h"
+
 class Window : public defwin {
 	friend class Core;
 

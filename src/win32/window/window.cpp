@@ -1,13 +1,25 @@
 
 #include "window.h"
 
-auto window_console = LOG::console_logger(L"Console (window)", 30);
+auto window_console = LOG::console_logger("window", 30);
 
 Window::Window() {
 	window_console.print(INFO, "Window::Window()");
 	winClass = L"template";
 	winName = L"template";
 	style = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+
+	c.open(CSIDL_APPDATA, "Template\\config.ini", ios::in);
+	pos = {
+		c.isSet("window", "x") ? c.getVal("window", "x") : 40,
+		c.isSet("window", "y") ? c.getVal("window", "y") : 40
+	};
+	size = {
+		c.isSet("window", "cx") ? c.getVal("window", "cx") : 600,
+		c.isSet("window", "cy") ? c.getVal("window", "cy") : 400
+	};
+	fs = c.isSet("window", "fs") ? c.getVal("window", "fs") : 0;
+	c.close();
 }
 
 BOOL Window::init() {
@@ -18,10 +30,12 @@ BOOL Window::init() {
 	BOOL value = TRUE;
 	DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &value, sizeof(value));
 
+	maximize(fs);
 	display();
-
+	
 	return true;
 }
+
 
 
 LRESULT Window::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
@@ -80,7 +94,17 @@ LRESULT Window::HandleDef(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
 		// Destroy, but I dont need to tell you that
 		case WM_DESTROY:
 		{
-			core.save();
+			WINDOWPLACEMENT wp = {};
+			GetWindowPlacement(wnd, &wp);
+
+			c.open(CSIDL_APPDATA, "Template\\config.ini", ios::in | ios::out);
+			c.setVal("window", "x", wp.rcNormalPosition.left);
+			c.setVal("window", "y", wp.rcNormalPosition.top);
+			c.setVal("window", "cx", wp.rcNormalPosition.right - wp.rcNormalPosition.left);
+			c.setVal("window", "cy", wp.rcNormalPosition.bottom - wp.rcNormalPosition.top);
+			c.setVal("window", "fs", wp.flags == 2 ? 1 : 0);
+			c.close();
+
 			display(false);
 			PostQuitMessage(0);
 
