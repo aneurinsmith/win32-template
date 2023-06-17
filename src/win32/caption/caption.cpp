@@ -1,14 +1,17 @@
 
 #include "caption.h"
 
+auto caption_console = LOG::console_logger("caption", 30);
 
 Caption::Caption() {
+	caption_console.print(INFO, "Caption::Caption()");
 	winClass = L"caption";
 	winName = L"caption";
 	style = WS_CHILD;
 }
 
 BOOL Caption::init(HWND parent) {
+	caption_console.print(INFO, "Caption::Caption(HWND ",parent,")");
 	prnt = parent;
 	defwin::init();
 
@@ -19,6 +22,7 @@ BOOL Caption::init(HWND parent) {
 
 
 LRESULT Caption::HandleMessage(HWND wnd, UINT msg, WPARAM wpm, LPARAM lpm) {
+	caption_console.print(TRACE, "Caption::HandleMessage(HWND ", wnd, ", UINT ", msg, ", WPARAM ", wpm, ", LPARAM ", lpm, ")");
 	
 	switch (msg) {
 		

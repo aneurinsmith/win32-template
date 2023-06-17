@@ -1,6 +1,8 @@
 
 #pragma once
 #include "defwin.h"
+
+#include "tools/logger/logger.h"
 #include "tools/button/button.h"
 
 class Caption : public defwin {
