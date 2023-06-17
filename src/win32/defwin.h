@@ -1,8 +1,11 @@
 
 #pragma once
 #include "include.h"
+
+#include "tools/config/config.h"
 #include "tools/renderer/renderer.h"
 
+extern Config c;
 extern int _winCount;
 extern int _sysHeight;
 extern int _sysFrame;
@@ -12,14 +15,29 @@ extern int _sysFrame;
 #define COL_HEAD 0x313031
 
 class defwin {
+	friend class Core;
 
 public:
 
 	defwin() {
-		winName = APP_NAME;
-		winClass = APP_NAME;
+		hwnd = 0;
+		prnt = 0;
+
+		rgn = { 0 };
 		pos = { CW_USEDEFAULT };
 		size = { CW_USEDEFAULT };
+		ctrlID = 0;
+		fs = 0;
+
+		style = 0;
+		exStyle = 0;
+
+		winName = APP_NAME;
+		winClass = APP_NAME;
+		menuName = APP_NAME;
+
+		r = Renderer();
+
 		_winCount++;
 	}
 
@@ -29,6 +47,31 @@ public:
 
 	BOOL init() {
 
+		if (!prnt && !(pos.x == CW_USEDEFAULT || pos.y == CW_USEDEFAULT)) {
+			MONITORINFO mi;
+			HMONITOR hMonitor, hMonitor_br, hMonitor_tl;
+
+			hMonitor = MonitorFromPoint({ pos.x + (size.cx / 2), pos.y + (size.cy / 2) }, MONITOR_DEFAULTTONEAREST);
+			hMonitor_br = MonitorFromPoint({ pos.x + size.cx, pos.y + size.cy }, MONITOR_DEFAULTTONEAREST);
+			hMonitor_tl = MonitorFromPoint({ pos.x, pos.y }, MONITOR_DEFAULTTONEAREST);
+
+			mi.cbSize = sizeof(mi);
+			GetMonitorInfo(hMonitor, &mi);
+			RECT window;
+			window = mi.rcWork;
+
+			if (pos.x < window.left && hMonitor == hMonitor_tl)
+				if (abs(window.left) > abs(pos.x)) pos.x += abs(window.left) - abs(pos.x);
+				else pos.x += abs(pos.x) - abs(window.left);
+			else if (pos.x + size.cx > window.right && hMonitor == hMonitor_br)
+				pos.x -= pos.x + size.cx - window.right;
+			if (pos.y < window.top && (hMonitor == hMonitor_tl || hMonitor == hMonitor_br))
+				if (abs(window.top) > abs(pos.y)) pos.y += abs(window.top) - abs(pos.y);
+				else pos.y += abs(pos.y) - abs(window.top);
+			else if (pos.y + size.cy > window.bottom && (hMonitor == hMonitor_tl || hMonitor == hMonitor_br))
+				pos.y -= pos.y + size.cy - window.bottom;
+		}
+		
 		if (!AssignClass(winClass)) throw runtime_error("defwin::init -> AssignClass() Failed");
 		if (!AssignWindow(pos, size)) throw runtime_error("defwin::init -> AssignWindow() Failed");
 
@@ -60,6 +103,7 @@ protected:
 	POINT	pos;
 	SIZE	size;
 	INT		ctrlID;
+	BOOL	fs;
 
 	DWORD	style,
 			exStyle;
@@ -76,32 +120,32 @@ protected:
 		defwin* data = reinterpret_cast<defwin*>(::GetWindowLongPtr(wnd, GWLP_USERDATA));
 
 		switch (msg) {
-		case WM_NCCREATE: {
+			case WM_NCCREATE: {
 
-			data = static_cast<defwin*>(reinterpret_cast<LPCREATESTRUCT>(lpm)->lpCreateParams);
-			data->hwnd = wnd;
-			SetWindowLongPtr(wnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(data));
+				data = static_cast<defwin*>(reinterpret_cast<LPCREATESTRUCT>(lpm)->lpCreateParams);
+				data->hwnd = wnd;
+				SetWindowLongPtr(wnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(data));
 
-			break;
-		}
-		case WM_SIZE: {
+				break;
+			}
+			case WM_SIZE: {
 
-			data->rgn.right = GET_X_LPARAM(lpm);
-			data->rgn.bottom = GET_Y_LPARAM(lpm);
+				data->rgn.right = GET_X_LPARAM(lpm);
+				data->rgn.bottom = GET_Y_LPARAM(lpm);
 
-			data->size = { GET_X_LPARAM(lpm), GET_Y_LPARAM(lpm) };
-			data->r.resize_buffer({ 0,0,GET_X_LPARAM(lpm),GET_Y_LPARAM(lpm) });
+				data->size = { GET_X_LPARAM(lpm), GET_Y_LPARAM(lpm) };
+				data->r.resize_buffer({ 0,0,GET_X_LPARAM(lpm),GET_Y_LPARAM(lpm) });
 
-			RedrawWindow(wnd, NULL, NULL, RDW_INVALIDATE);
+				RedrawWindow(wnd, NULL, NULL, RDW_INVALIDATE);
 
-			break;
-		}
-		case WM_MOVE: {
+				break;
+			}
+			case WM_MOVE: {
 
-			data->pos = { GET_X_LPARAM(lpm),GET_Y_LPARAM(lpm) };
+				data->pos = { GET_X_LPARAM(lpm),GET_Y_LPARAM(lpm) };
 
-			break;
-		}
+				break;
+			}
 		}
 
 		if (data) return data->HandleMessage(wnd, msg, wpm, lpm);
@@ -122,7 +166,6 @@ protected:
 			wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 			wcex.hIcon = LoadIcon(GetModuleHandleW(NULL), MAKEINTRESOURCE(ICO_APP));
 			wcex.lpszClassName = _winClass;
-			wcex.lpszMenuName = menuName;
 			wcex.style = CS_BYTEALIGNWINDOW | CS_DBLCLKS;
 
 			if (!RegisterClassExW(&wcex)) {
@@ -137,6 +180,11 @@ protected:
 		hwnd = CreateWindowExW(exStyle, winClass, winName, style,
 			p.x, p.y, s.cx, s.cy,
 			prnt, (HMENU)ctrlID, GetModuleHandleW(NULL), (void*)this);
+
+
+		DWORD error = ::GetLastError();
+		std::string message = std::system_category().message(error);
+
 
 		if (!hwnd) {
 			return false;
