@@ -8,8 +8,8 @@
 #include "include.h"
 #include "sinks/console_sink.h"
 
-#pragma push_macro("ERROR");
-#pragma push_macro("DEBUG");
+#pragma push_macro("ERROR")
+#pragma push_macro("DEBUG")
 #undef ERROR
 #undef DEBUG
 
@@ -59,7 +59,7 @@ namespace LOG {
 	}
 
 	/*
-		\brief		The strucutre template of each Logger.
+		\brief		The class structure of each Logger.
 	*/
 	class Logger {
 	public:
@@ -117,8 +117,11 @@ namespace LOG {
 		\param		ringbuffer – The number of items that can be added before they need to start getting removed; Default 200; Max 32,766.
 		\return		
 	*/
-	inline Logger console_logger(wstring name = L"Console", int ringbuffer = 200) {
+	inline Logger console_logger(string name = "Console", int ringbuffer = 200) {
+
 		auto sink = make_shared<ConsoleSink>(name, ringbuffer);
+		sink->init();
+
 		auto logger = Logger();
 		logger.add_sink(sink);
 		Logger::instance().add_sink(sink);
@@ -199,5 +202,5 @@ namespace LOG {
 	}
 }
 
-#pragma pop_macro("ERROR");
-#pragma pop_macro("DEBUG");
+#pragma pop_macro("ERROR")
+#pragma pop_macro("DEBUG")
